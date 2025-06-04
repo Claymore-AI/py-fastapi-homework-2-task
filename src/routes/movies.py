@@ -270,10 +270,13 @@ async def update_movie(
             await _update_movie_relationships(db, movie, model, update_data[key], attr)
 
     if "name" in update_data or "date" in update_data:
+        new_name = update_data.get("name", movie.name)
+        new_date = update_data.get("date", movie.date)
+
         existing = await db.scalar(
             select(MovieModel)
-            .where(MovieModel.name == movie.name)
-            .where(MovieModel.date == movie.date)
+            .where(MovieModel.name == new_name)
+            .where(MovieModel.date == new_date)
             .where(MovieModel.id != movie_id)
         )
         if existing:
